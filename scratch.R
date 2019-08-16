@@ -23,6 +23,7 @@
 #### SETUP ####
 
 library(tidyverse)
+library(plotly)
 source("ISD_UTILS.R")
 
 HBs <- read_csv("data/geography_codes_and_labels_hb2014_01042019.csv")
@@ -67,4 +68,54 @@ board %>% bind_rows(network) %>% bind_rows(national) %>%
   ggplot(aes(x = Year, y = IncidencesAllAges, colour = location)) +
   geom_point() + 
   geom_line()
-  
+
+
+# board, network, nation crude rate w' 95% CI
+
+board <- df_board %>% 
+  filter(CancerSite == "All cancer types",
+         HB2014Name == "NHS Borders",
+         Sex == "All") %>%
+  select(HB2014Name, Year, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval) %>%
+  rename(location = HB2014Name)
+
+network <- df_network %>%
+  filter(CancerSite == "All cancer types",
+         Region == "South East of Scotland",
+         Sex == "All") %>%
+  select(Region, Year, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval) %>%
+  rename(location = Region)
+
+national <- df_national %>% 
+  filter(CancerSite == "All cancer types",
+         Country == "NHS Scotland",
+         Sex == "All") %>%
+  select(Country, Year, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval) %>%
+  rename(location = Country)
+
+
+board %>% bind_rows(network) %>% bind_rows(national) %>% 
+  ggplot(aes(x = Year, y = CrudeRate, colour = location)) + 
+  geom_point() +
+  geom_line() + 
+  geom_ribbon(aes(ymin = CrudeRateLower95pcConfidenceInterval, 
+                  ymax = CrudeRateUpper95pcConfidenceInterval, 
+                  fill = location), alpha = .3, color = NA) +
+  theme_bw()
+
+
+# SCAN boards crude rate w' 95% CI
+
+df_board %>% 
+  filter(CancerSite == "All cancer types",
+         HB2014Name %in% c("NHS Borders", "NHS Dumfries and Galloway", "NHS Fife", "NHS Lothian"),
+         Sex == "All") %>%
+  select(HB2014Name, Year, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval) %>%
+  rename(location = HB2014Name) %>% 
+  ggplot(aes(x = Year, y = CrudeRate, colour = location)) + 
+  geom_point() +
+  geom_line() + 
+  geom_ribbon(aes(ymin = CrudeRateLower95pcConfidenceInterval, 
+                  ymax = CrudeRateUpper95pcConfidenceInterval, 
+                  fill = location), alpha = .3, color = NA) +
+  theme_bw()
