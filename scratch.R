@@ -19,6 +19,8 @@
 # HB lookup
 # https://www.opendata.nhs.scot/dataset/9f942fdb-e59e-44f5-b534-d6e17229cc7b/resource/652ff726-e676-4a20-abda-435b98dd7bdc/download/geography_codes_and_labels_hb2014_01042019.csv
 
+# NHS board age projections (NRS) 
+# https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-projections/sub-national-population-projections/2016-based/detailed-tables
 
 #### SETUP ####
 
@@ -119,3 +121,81 @@ df_board %>%
                   ymax = CrudeRateUpper95pcConfidenceInterval, 
                   fill = location), alpha = .3, color = NA) +
   theme_bw()
+
+
+# board population projections
+df_borders_pop <- read_csv("data/population_board_NRS/Population-S08000016-Male.csv") %>%
+  mutate(gender = "male") %>%
+  bind_rows(read_csv("data/population_board_NRS/Population-S08000016-Female.csv") %>% mutate(gender = "female")) %>%
+  filter(Age != "All Ages") %>%
+  mutate(age_numeric = as.numeric(Age),
+         age_numeric = if_else(is.na(age_numeric)==TRUE, 90, age_numeric)) %>%  # note that age_numeric = 90 is 90+
+  mutate(age_group_10yr = case_when(age_numeric < 10 ~ "00-09",
+                                    age_numeric < 20 ~ "10-19",
+                                    age_numeric < 30 ~ "20-29",
+                                    age_numeric < 30 ~ "20-29",
+                                    age_numeric < 40 ~ "30-39",
+                                    age_numeric < 50 ~ "40-49",
+                                    age_numeric < 60 ~ "50-59",
+                                    age_numeric < 70 ~ "60-69",
+                                    age_numeric < 80 ~ "70-79",
+                                    age_numeric < 90 ~ "80-89",
+                                    TRUE ~ "90+"),
+         age_group_5yr = case_when(age_numeric < 5 ~ "00-04",
+                                    age_numeric < 10 ~ "05-09",
+                                    age_numeric < 15 ~ "10-14",
+                                    age_numeric < 20 ~ "15-19",
+                                    age_numeric < 25 ~ "20-24",
+                                    age_numeric < 30 ~ "25-29",
+                                    age_numeric < 35 ~ "30-24",
+                                    age_numeric < 40 ~ "35-39",
+                                    age_numeric < 45 ~ "40-44",
+                                    age_numeric < 50 ~ "45-49",
+                                    age_numeric < 55 ~ "50-54",
+                                    age_numeric < 60 ~ "55-59",
+                                    age_numeric < 65 ~ "60-64",
+                                    age_numeric < 70 ~ "65-69",
+                                    age_numeric < 75 ~ "70-74",
+                                    age_numeric < 80 ~ "75-79",
+                                    age_numeric < 85 ~ "80-84",
+                                    age_numeric < 90 ~ "85-89",
+                                    TRUE ~ "90+"))
+
+# national population projections
+df_scot_pop <- read_csv("data/population_board_NRS/Population-S92000003-Male.csv") %>%
+  mutate(gender = "male") %>%
+  bind_rows(read_csv("data/population_board_NRS/Population-S92000003-Female.csv") %>% mutate(gender = "female")) %>%
+  filter(Age != "All Ages") %>%
+  mutate(age_numeric = as.numeric(Age),
+         age_numeric = if_else(is.na(age_numeric)==TRUE, 90, age_numeric)) %>%  # note that age_numeric = 90 is 90+
+  mutate(age_group_10yr = case_when(age_numeric < 10 ~ "00-09",
+                                    age_numeric < 20 ~ "10-19",
+                                    age_numeric < 30 ~ "20-29",
+                                    age_numeric < 30 ~ "20-29",
+                                    age_numeric < 40 ~ "30-39",
+                                    age_numeric < 50 ~ "40-49",
+                                    age_numeric < 60 ~ "50-59",
+                                    age_numeric < 70 ~ "60-69",
+                                    age_numeric < 80 ~ "70-79",
+                                    age_numeric < 90 ~ "80-89",
+                                    TRUE ~ "90+"),
+         age_group_5yr = case_when(age_numeric < 5 ~ "00-04",
+                                   age_numeric < 10 ~ "05-09",
+                                   age_numeric < 15 ~ "10-14",
+                                   age_numeric < 20 ~ "15-19",
+                                   age_numeric < 25 ~ "20-24",
+                                   age_numeric < 30 ~ "25-29",
+                                   age_numeric < 35 ~ "30-24",
+                                   age_numeric < 40 ~ "35-39",
+                                   age_numeric < 45 ~ "40-44",
+                                   age_numeric < 50 ~ "45-49",
+                                   age_numeric < 55 ~ "50-54",
+                                   age_numeric < 60 ~ "55-59",
+                                   age_numeric < 65 ~ "60-64",
+                                   age_numeric < 70 ~ "65-69",
+                                   age_numeric < 75 ~ "70-74",
+                                   age_numeric < 80 ~ "75-79",
+                                   age_numeric < 85 ~ "80-84",
+                                   age_numeric < 90 ~ "85-89",
+                                   TRUE ~ "90+"))
+
