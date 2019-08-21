@@ -1,9 +1,9 @@
 ---
 title: "**NHS Borders** -- Cancer Incidence"
 author: 
-- "[John Robert Taylor](mailto:bob.taylor@nhs.net)"
-- "candidate ID: &nbsp; &nbsp; **20214**"
-date: "23/08/2019"
+- "John Robert Taylor"
+- "[bob.taylor@nhs.net](mailto:bob.taylor@nhs.net)"
+- "candidate ID: &nbsp; **20214**"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -17,33 +17,27 @@ geometry:
 - top=-10mm
 - left=20mm
 - right=20mm
-- bottom=10mm
+- bottom=30mm
 subparagraph: yes
 header-includes:
 - \usepackage{titlesec}
 - \titlespacing{\section}{0pt}{2\parskip}{-\parskip}
-- \titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
-- \titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
+- \titlespacing{\subsection}{0pt}{2\parskip}{-\parskip}
+- \titlespacing{\subsubsection}{0pt}{2\parskip}{-\parskip}
 - \pagenumbering{gobble}
 - \usepackage{titling}
-- \setlength{\droptitle}{1cm}
+- \setlength{\droptitle}{1.5cm}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+# - \usepackage{titling}
+# - \setlength{\droptitle}{1cm}
 ```
 
 # Section
 
 Some test text here.
-
-## Sub Section
-
-And some more text I suppose.
-
-### Sub Sub Section
-
-Yep, text time.
 
 
 # R Markdown
@@ -66,7 +60,12 @@ You can also embed plots, for example:
 plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+1 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 # Sources
+
 List of data sources etc
+
+2 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+3 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

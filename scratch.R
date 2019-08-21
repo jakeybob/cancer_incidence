@@ -202,3 +202,21 @@ df_scot_pop <- read_csv("data/population_board_NRS/Population-S92000003-Male.csv
 write_rds(df_borders_pop, "data/borders_pop.rds")
 write_rds(df_scot_pop, "data/scot_pop.rds")
 
+
+# Borders pop dist
+ages <- read_rds("data/borders_pop.rds") %>%
+  select(-Age, -gender, -age_numeric, -age_group_10yr) %>%
+  gather(key="year", value="pop", -age_group_5yr) %>%
+  group_by(year, age_group_5yr) %>%
+  summarise(pop = sum(pop))
+
+# do as flat file histogram with bin width 5
+
+ages %>%
+  filter(year %in% c(2019, 2039)) %>%
+  ggplot() +
+  # geom_col(aes(x = age_group_5yr, y = pop, fill = year), alpha = .5, width = 1, position="identity") +
+  geom_col(data = ages %>% filter(year==2019), aes(x = age_group_5yr, y = pop, fill="blue"), alpha = .8, width = 1) + 
+  # geom_vline(data = ages %>% filter(year==2019), xintercept = stat(median)) +
+  geom_col(data = ages %>% filter(year==2039), aes(x = age_group_5yr, y = pop, fill="red"), alpha = .3, width = 1) + 
+  theme_bw()

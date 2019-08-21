@@ -36,6 +36,9 @@ df_national <- read_csv("data/opendata_inc9216_scotland.csv") %>%
 
 df_nat_net <- full_join(df_network, df_national)
 
+# C44: Other malignant neoplasms of skin
+
+
 
 names(df_national)[which(!(names(df_national) %in% names(df_network)))] # cols not in national: StandardisedIncidenceRatioQF
 
