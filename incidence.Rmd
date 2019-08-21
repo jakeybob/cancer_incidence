@@ -2,14 +2,14 @@
 title: "**NHS Borders** -- Cancer Incidence"
 author: 
 - "[John Robert Taylor](mailto:bob.taylor@nhs.net)"
-- "candidate number: **123456**"
+- "candidate ID: &nbsp; &nbsp; **20214**"
 date: "23/08/2019"
 output:
   pdf_document:
     latex_engine: xelatex
     template: NULL
     keep_tex: false
-mainfont: Roboto
+mainfont: Source Sans Pro
 documentclass: proc
 urlcolor: blue
 geometry:
@@ -20,25 +20,33 @@ geometry:
 - bottom=10mm
 subparagraph: yes
 header-includes:
-- \usepackage[explicit]{titlesec}
-- \titlespacing{\title}{0pt}{0pt plus 0pt minus 2pt}{0pt plus 2pt minus 2pt}
-- \titlespacing{\section}{0pt}{0pt plus 0pt minus 2pt}{0pt plus 2pt minus 2pt}
+- \usepackage{titlesec}
+- \titlespacing{\section}{0pt}{2\parskip}{-\parskip}
+- \titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
+- \titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
 - \pagenumbering{gobble}
+- \usepackage{titling}
+- \setlength{\droptitle}{1cm}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# - \titleformat*{\section}{\itshape}
-
-# \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
-
-
-# - \titlespacing{\section}{0pt}{\parskip}{-\parskip}
-# - \titlespacing{\subsection}{0pt}{\parskip}{-\parskip}
-# - \titlespacing{\subsubsection}{0pt}{\parskip}{-\parskip}
 ```
 
-## R Markdown
+# Section
+
+Some test text here.
+
+## Sub Section
+
+And some more text I suppose.
+
+### Sub Sub Section
+
+Yep, text time.
+
+
+# R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -50,7 +58,7 @@ summary(cars)
 [linked phrase](http://example.com)
 
 
-## Including Plots
+# Including Plots
 
 You can also embed plots, for example:
 
@@ -59,3 +67,6 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Sources
+List of data sources etc
