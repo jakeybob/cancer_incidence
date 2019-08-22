@@ -21,9 +21,8 @@ geometry:
 subparagraph: yes
 header-includes:
 - \usepackage{titlesec}
-- \titlespacing{\section}{0pt}{2\parskip}{-\parskip}
-- \titlespacing{\subsection}{0pt}{2\parskip}{-\parskip}
-- \titlespacing{\subsubsection}{0pt}{2\parskip}{-\parskip}
+- \titlespacing{\section}{0pt}{2\parskip}{\parskip}
+- \titlespacing{\subsection}{0pt}{2\parskip}{\parskip}
 - \pagenumbering{gobble}
 - \usepackage{titling}
 - \setlength{\droptitle}{1.5cm}
@@ -31,41 +30,28 @@ header-includes:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# - \usepackage{titling}
-# - \setlength{\droptitle}{1cm}
 ```
 
-# Section
+# Current Incidence Levels
+NHS Borders has seen a steady increase in the total cancer incidence (for all cancer types, note some skin cancers are excluded). In 2017, there were 894 incidences of cancer in NHS Border, compared to 702 ten years previously.
 
-Some test text here.
-
-
-# R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-[linked phrase](http://example.com)
-
-
-# Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
+```{r, echo=FALSE}
 plot(pressure)
 ```
 
-1 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+This trend is mirrored in the rate of total cancer incidence, so is not explicable merely by changing total population numbers.
+
+
+# Trends and Comparisons
+
+# Future Implications
+
+Future treatment services will increasingly need to be geared towards the need of an ageing population
 
 # Sources
 
-List of data sources etc
+Cancer Incidence Data: [https://www.opendata.nhs.scot/dataset/annual-cancer-incidence](https://www.opendata.nhs.scot/dataset/annual-cancer-incidence)
 
-2 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+NRS Population Projections: [https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-projections/sub-national-population-projections/2016-based/detailed-tables)
 
-3 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Analysis: [https://github.com/jakeybob/cancer_incidence](https://github.com/jakeybob/cancer_incidence)
