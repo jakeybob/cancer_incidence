@@ -1,5 +1,5 @@
 ---
-title: "**NHS Borders** -- Cancer Incidence"
+title: "**NHS Borders** | Cancer Incidence"
 author: 
 - "John Robert Taylor"
 - "[bob.taylor@nhs.net](mailto:bob.taylor@nhs.net)"
@@ -30,46 +30,63 @@ header-includes:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(gridExtra)
+# load plots
+p_incidence_trends <- read_rds("data/p_incidence_trends.rds")
+p_skin <- read_rds("data/p_skin.rds")
+p_skin_network <- read_rds("data/p_skin_network.rds")
+p_scot_incidence_demo <- read_rds("data/p_scot_incidence_demo.rds")
+p_borders_demo <- read_rds("data/p_borders_demo.rds")
+p_both_demos <- read_rds("data/p_both_demos.rds")
 ```
 
-# Current Cancer Incidence
-NHS Borders has seen a steady increase in the total cancer incidence (for all cancer types, note some skin cancers are excluded). In 2017, there were 894 incidences of cancer in NHS Border, compared to 702 ten years previously -- an increase of over 25%.
+# Total Cancer Incidence
+*NHS Borders* has seen a steady increase in total cancer incidence. In 2017, there were *894* incidences of cancer in *NHS Borders*, compared to *702* one decade earlier -- an increase of over *25%*. This trend is pictured below, from 1993 -- 2017.
 
-```{r, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE, fig.width=6, fig.height=3}
+p_incidence_trends
 ```
 
-This trend is mirrored in the rate of total cancer incidence per population, so is not explicable merely by changing total population numbers.
+This increase is mirrored in the crude rate of total cancer incidences per 100,000 population, so is not explicable by any change in the total population numbers.
 
 
-# Comparisons, Outliers and Trends
+# Current Outliers & Future Trends
 
-In terms of increase in cancer incidence in NHS Borders, three cancer sites stand out: non-melanoma skin cancer; basal cell carcinoma of skin, and squamos cell carcinoma of skin.
+**Selected Cancer Sites:&nbsp;**
+In terms of increasing cancer incidence in *NHS Borders*, three cancer sites stand out: *basal cell carcinoma of the skin*; *non-melanoma skin cancer*; *squamos cell carcinoma of the skin*.
 
-```{r, echo=FALSE}
-plot(pressure)
+```{r, echo=FALSE, fig.width=6, fig.height=3}
+p_skin
 ```
 
-However it is worth noting that other boards and cancer networks show similar trends for incidences of these cancers.
+Incidences of these cancers have all roughly doubled in the time period shown, and also exhibit high absolute incidences compared to other cancers in the population of interest. 
 
-```{r, echo=FALSE}
-plot(pressure)
+It is also worth noting that other geographical regions show similar trends. 
+
+```{r, echo=FALSE, fig.width=6, fig.height=3.5}
+p_skin_network
 ```
 
-Additionally, it is worth noting that as of 2017 the median age of the *NHS Borders* population was X, with the demographic of all cancer incidences in Scotland being heavily skewed towards older patients.
+Here, the incidence rate (age standardised per 100,000 population, with reference to the European Standard Population) for these cancers is shown, for the three Scottish cancer networks.
 
-```{r, echo=FALSE}
-plot(pressure)
+**Ageing Population:&nbsp;**
+Looking to the future, it is likely that the ageing population will play a role in increasing cancer incidence. In 2017, the median age of a Scottish person diagnosed with cancer was *70* years old. 
+
+```{r, echo=FALSE, fig.width=6, fig.height=3}
+p_scot_incidence_demo
 ```
 
-# Implications
+In *NHS Borders*, population demographics are projected to shift towards the elderly over time. Specifically, the population of over 70s is expected to rise from approx. *20,500* to *30,000* -- an almost 50% increase in a population segment that currently exhibits half of all cancer incidences.
 
-Future treatment services will increasingly need to be geared towards anticipatng the need of an ageing population.
+```{r, echo=FALSE, fig.width=6, fig.height=3}
+p_borders_demo
+```
 
-## Key Points
+# Key Points
 - continuing steady rise in cancer incidence and cancer incidence rate 
-- three skin cancer sites show notable increases, although also evident nationwide
-- population demographic changes will likely continue if not exacerbate overall cancer incidence trend
+- three skin cancer sites show notable increases, although these increases are also evident nationwide
+- population demographic changes will likely continue to exacerbate the overall increase in cancer incidence
 
 
 # Sources
