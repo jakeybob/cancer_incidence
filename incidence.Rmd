@@ -32,26 +32,51 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Current Incidence Levels
-NHS Borders has seen a steady increase in the total cancer incidence (for all cancer types, note some skin cancers are excluded). In 2017, there were 894 incidences of cancer in NHS Border, compared to 702 ten years previously.
+# Current Cancer Incidence
+NHS Borders has seen a steady increase in the total cancer incidence (for all cancer types, note some skin cancers are excluded). In 2017, there were 894 incidences of cancer in NHS Border, compared to 702 ten years previously -- an increase of over 25%.
 
 ```{r, echo=FALSE}
 plot(pressure)
 ```
 
-This trend is mirrored in the rate of total cancer incidence, so is not explicable merely by changing total population numbers.
+This trend is mirrored in the rate of total cancer incidence per population, so is not explicable merely by changing total population numbers.
 
 
-# Trends and Comparisons
+# Comparisons, Outliers and Trends
 
-# Future Implications
+In terms of increase in cancer incidence in NHS Borders, three cancer sites stand out: non-melanoma skin cancer; basal cell carcinoma of skin, and squamos cell carcinoma of skin.
 
-Future treatment services will increasingly need to be geared towards the need of an ageing population
+```{r, echo=FALSE}
+plot(pressure)
+```
+
+However it is worth noting that other boards and cancer networks show similar trends for incidences of these cancers.
+
+```{r, echo=FALSE}
+plot(pressure)
+```
+
+Additionally, it is worth noting that as of 2017 the median age of the *NHS Borders* population was X, with the demographic of all cancer incidences in Scotland being heavily skewed towards older patients.
+
+```{r, echo=FALSE}
+plot(pressure)
+```
+
+# Implications
+
+Future treatment services will increasingly need to be geared towards anticipatng the need of an ageing population.
+
+## Key Points
+- continuing steady rise in cancer incidence and cancer incidence rate 
+- three skin cancer sites show notable increases, although also evident nationwide
+- population demographic changes will likely continue if not exacerbate overall cancer incidence trend
+
 
 # Sources
 
 Cancer Incidence Data: [https://www.opendata.nhs.scot/dataset/annual-cancer-incidence](https://www.opendata.nhs.scot/dataset/annual-cancer-incidence)
 
-NRS Population Projections: [https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-projections/sub-national-population-projections/2016-based/detailed-tables)
+NRS Population Projections: 
+[https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/](https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-projections/sub-national-population-projections/2016-based/detailed-tables)
 
 Analysis: [https://github.com/jakeybob/cancer_incidence](https://github.com/jakeybob/cancer_incidence)
