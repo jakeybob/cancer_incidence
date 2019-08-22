@@ -42,7 +42,7 @@ p_both_demos <- read_rds("data/p_both_demos.rds")
 ```
 
 # Total Cancer Incidence
-*NHS Borders* has seen a steady increase in total cancer incidence. In 2017, there were *894* incidences of cancer in *NHS Borders*, compared to *702* one decade earlier -- an increase of over *25%*. This trend is pictured below, from 1993 -- 2017.
+*NHS Borders* has seen a steady increase in total cancer incidence. In 2017, there were *894* incidences of cancer, compared to *702* one decade earlier -- an increase of over *25%*. This trend is pictured below, from 1993 -- 2017.
 
 ```{r, echo=FALSE, fig.width=6, fig.height=3}
 p_incidence_trends
@@ -71,7 +71,7 @@ p_skin_network
 Here, the incidence rate (age standardised per 100,000 population, with reference to the European Standard Population) for these cancers is shown, for the three Scottish cancer networks.
 
 **Ageing Population:&nbsp;**
-Looking to the future, it is likely that the ageing population will play a role in increasing cancer incidence. In 2017, the median age of a Scottish person diagnosed with cancer was *70* years old. 
+Looking to the future, it is likely that the ageing population will play a role in increasing cancer incidence. In 2017, the median age of an *NHS Scotland* patient diagnosed with cancer was *70* years old. 
 
 ```{r, echo=FALSE, fig.width=6, fig.height=3}
 p_scot_incidence_demo
