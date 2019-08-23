@@ -77,7 +77,7 @@ Looking to the future, it is likely that the ageing population will play a role 
 p_scot_incidence_demo
 ```
 
-In *NHS Borders*, population demographics are projected to shift towards the elderly over time. Specifically, the population of over 70s is expected to rise from approx. *20,500* to *30,000* -- an almost 50% increase in a population segment that currently exhibits half of all cancer incidences.
+In *NHS Borders*, population demographics are projected to shift towards the elderly over time. Specifically, the population of over 70s is expected to rise from approx. *20,500* to *30,000* over the next twenty years -- representing an almost 50% increase in a population segment that currently exhibits half of all cancer incidences.
 
 ```{r, echo=FALSE, fig.width=6, fig.height=3}
 p_borders_demo
