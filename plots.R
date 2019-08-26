@@ -289,7 +289,7 @@ ggplotify::as.ggplot(grid.arrange(p, p2, p3, p4, ncol = 2, nrow = 2))
 ggsave("pics/all_incidence_and_rate.png", width = 8, height = 8, dpi=300)
 
 
-#### 2. ####
+#### 2. small multiples ####
 
 dat <- df_board %>% filter(CancerSite != "All cancer types",
                            # Year > 2007,
@@ -380,3 +380,35 @@ dat %>%
 
 ggsave("pics/small_multiples_borders_SI_2.png", dpi=300, width=20, height=10, units = "in")
 
+
+# 3. breast ####
+
+dat <- df_board %>%
+  filter(CancerSite %in% c("Breast", "Carcinoma in situ of the breast"),
+         Sex == "All")
+
+dat %>%
+  filter(CancerSite == "Breast") %>%
+  # filter(CancerSite == "Carcinoma in situ of the breast") %>%
+  ggplot(aes(x = Year, y = CrudeRate)) +
+  geom_line() + geom_point() +
+  facet_wrap(vars(HB2014Name),
+             scales = "free_y",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  theme_bw() +
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold"))
+
+ggsave("pics/small_multiples_breast.png", dpi=300, width=20, height=14, units = "in")
+
+# df <- dat %>%
+#   filter(CancerSite == "Breast",
+#          HB2014Name == "NHS Fife") %>%
+#   select(Year, CrudeRate)
+# 
+# ff <- fft(df$CrudeRate)[2:length(df$CrudeRate)]
+# ff <- ff[1:round(length(ff)/2)]
+# pow <- Re(ff*Conj(ff))
+# plot(pow)
