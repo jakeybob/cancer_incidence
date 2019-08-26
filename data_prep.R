@@ -49,6 +49,7 @@ names(df_national)[which(!(names(df_national) %in% names(df_network)))] # cols n
 #### POPULATION DATA ####
 # NHS board and national age projections (NRS) 
 # https://www.nrscotland.gov.uk/statistics-and-data/statistics/statistics-by-theme/population/population-projections/sub-national-population-projections/2016-based/detailed-tables
+# https://www.nrscotland.gov.uk/files//statistics/population-estimates/time-series/mid-18/mid-year-pop-est-18-time-series-4.csv
 
 # board population projections
 df_borders_pop <- read_csv("data/population_board_NRS/Population-S08000016-Male.csv") %>%
@@ -129,3 +130,12 @@ df_scot_pop <- read_csv("data/population_board_NRS/Population-S92000003-Male.csv
                                    TRUE ~ "90+"))
 
 write_rds(df_scot_pop, "data/scot_pop.rds")
+
+# national estimates
+
+df_scot_pop_estimates <- read_csv("data/mid-year-pop-est-18-time-series-4.csv")[1:18,1:40] %>%
+  filter(is.na(`X2`) == FALSE)
+names(df_scot_pop_estimates) <- as.character(df_scot_pop_estimates[1, ])
+df_scot_pop_estimates <- df_scot_pop_estimates[2:dim(df_scot_pop_estimates)[1], ]
+
+write_rds(df_scot_pop_estimates, "data/scot_pop_estimates.rds")
