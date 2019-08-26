@@ -200,6 +200,27 @@ dat <- df_board %>% filter(Sex == "All",
                            CancerSite == "All cancer types",
                            HB2014Name == "NHS Borders")
 
+# scot_pop_est <- read_rds("data/scot_pop_estimates.rds") %>%
+#   filter(Persons == "Scotland")
+# scot_pop_est <- scot_pop_est[, 3:dim(scot_pop_est)[2]]
+# scot_pop_est <- as_tibble(cbind(nms = names(scot_pop_est), t(scot_pop_est)))
+# names(scot_pop_est) <- c("Year", "Population")
+# scot_pop_est <- scot_pop_est %>% mutate_all(as.numeric)
+
+dat2 <- df_national %>% 
+  filter(Sex == "All",
+         CancerSite == "All cancer types") %>%
+  select(Year, IncidencesAllAges, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval)
+# rename(CrudeRate_o = CrudeRate) %>%
+# inner_join(scot_pop_est) %>%
+# mutate(CrudeRate = 1e5*IncidencesAllAges / Population)
+
+# 2017 comparisons
+borders_2017_crudeRate <- (dat %>% filter(Year == 2017))$CrudeRate
+scot_2017_crudeRate <- (dat2 %>% filter(Year == 2017))$CrudeRate
+ratio <- borders_2017_crudeRate / scot_2017_crudeRate
+
+
 fit_incidence <- lm(IncidencesAllAges ~ Year, data = dat)
 p <- dat %>%
   select(Year, IncidencesAllAges, CrudeRate) %>%
@@ -208,9 +229,11 @@ p <- dat %>%
   geom_line() +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=850, label=paste0("y ~",  sprintf(fit_incidence$coefficients["Year"], fmt="%.2f"), " x")) +
-  ylab("Total Incidence") + ggtitle("Total Incidence") +
+  annotate("text", x=2010, y=600, label=paste0("2017 value\n= ", (dat %>% filter(Year == 2017))$IncidencesAllAges)) +
+  ylab("Total Incidence") + ggtitle("Total Incidence (Borders)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
+
 
 fit_incidence_rate <- lm(CrudeRate ~ Year, data = dat)
 p2 <- df_board %>% filter(Sex == "All",
@@ -224,25 +247,12 @@ p2 <- df_board %>% filter(Sex == "All",
                   ymax = CrudeRateUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=750, label=paste0("y ~",  sprintf(fit_incidence_rate$coefficients["Year"], fmt="%.2f"), " x")) +
-  ylab("Total Incidence Rate per 100,000") + ggtitle("Total Incidence Rate") +
+  annotate("text", x=2010, y=515, label = paste0("2017 value\n=", sprintf(borders_2017_crudeRate, fmt="%.2f"), 
+                                                 "\n\nratio w.r.t Scotland\n=", sprintf(ratio, fmt="%.2f"))) + 
+  ylab("Total Incidence Rate per 100,000") + ggtitle("Total Incidence Rate (Borders)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
 
-
-# scot_pop_est <- read_rds("data/scot_pop_estimates.rds") %>%
-#   filter(Persons == "Scotland")
-# scot_pop_est <- scot_pop_est[, 3:dim(scot_pop_est)[2]]
-# scot_pop_est <- as_tibble(cbind(nms = names(scot_pop_est), t(scot_pop_est)))
-# names(scot_pop_est) <- c("Year", "Population")
-# scot_pop_est <- scot_pop_est %>% mutate_all(as.numeric)
-
-dat2 <- df_national %>% 
-  filter(Sex == "All",
-         CancerSite == "All cancer types") %>%
-  select(Year, IncidencesAllAges, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval)
-  # rename(CrudeRate_o = CrudeRate) %>%
-  # inner_join(scot_pop_est) %>%
-  # mutate(CrudeRate = 1e5*IncidencesAllAges / Population)
 
 fit_incidence_nat <- lm(IncidencesAllAges ~ Year, data = dat2)
 p3 <- dat2 %>%
@@ -252,10 +262,11 @@ p3 <- dat2 %>%
   geom_line() +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=32000, label=paste0("y ~",  sprintf(fit_incidence_nat$coefficients["Year"], fmt="%.2f"), " x")) +
+  annotate("text", x=2010, y=27000, label=paste0("2017 value\n= ", (dat2 %>% filter(Year == 2017))$IncidencesAllAges)) + 
   ylab("Total Incidence") + ggtitle("Total Incidence (Scotland)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
-p3
+
 
 fit_incidence_rate_nat <- lm(CrudeRate ~ Year, data = dat2)
 p4 <- dat2 %>%
@@ -266,6 +277,7 @@ ggplot(aes(x = Year, y = CrudeRate)) +
                   ymax = CrudeRateUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=600, label=paste0("y ~",  sprintf(fit_incidence_rate_nat$coefficients["Year"], fmt="%.2f"), " x")) +
+  annotate("text", x=2010, y=525, label=paste0("2017 value\n= ", sprintf((dat2 %>% filter(Year == 2017))$CrudeRate, fmt="%.2f"))) +
   ylab("Total Incidence Rate per 100,000") + ggtitle("Total Incidence Rate (Scotland)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
