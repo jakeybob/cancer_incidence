@@ -216,10 +216,12 @@ fit_incidence_rate <- lm(CrudeRate ~ Year, data = dat)
 p2 <- df_board %>% filter(Sex == "All",
                           CancerSite == "All cancer types",
                           HB2014Name == "NHS Borders") %>%
-  select(Year, IncidencesAllAges, CrudeRate) %>%
+  select(Year, IncidencesAllAges, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval) %>%
   ggplot(aes(x = Year, y = CrudeRate)) +
   geom_point() + 
   geom_line() +
+  geom_ribbon(aes(ymin = CrudeRateLower95pcConfidenceInterval, 
+                  ymax = CrudeRateUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=750, label=paste0("y ~",  sprintf(fit_incidence_rate$coefficients["Year"], fmt="%.2f"), " x")) +
   ylab("Total Incidence Rate per 100,000") + ggtitle("Total Incidence Rate") +
@@ -227,44 +229,47 @@ p2 <- df_board %>% filter(Sex == "All",
   theme(plot.title = element_text(face="bold"))
 
 
-scot_pop_est <- read_rds("data/scot_pop_estimates.rds") %>%
-  filter(Persons == "Scotland")
-scot_pop_est <- scot_pop_est[, 3:dim(scot_pop_est)[2]]
-scot_pop_est <- as_tibble(cbind(nms = names(scot_pop_est), t(scot_pop_est)))
-names(scot_pop_est) <- c("Year", "Population")
-
-scot_pop_est <- scot_pop_est %>% mutate_all(as.numeric)
+# scot_pop_est <- read_rds("data/scot_pop_estimates.rds") %>%
+#   filter(Persons == "Scotland")
+# scot_pop_est <- scot_pop_est[, 3:dim(scot_pop_est)[2]]
+# scot_pop_est <- as_tibble(cbind(nms = names(scot_pop_est), t(scot_pop_est)))
+# names(scot_pop_est) <- c("Year", "Population")
+# scot_pop_est <- scot_pop_est %>% mutate_all(as.numeric)
 
 dat2 <- df_national %>% 
   filter(Sex == "All",
          CancerSite == "All cancer types") %>%
-  select(Year, IncidencesAllAges) %>% 
-  inner_join(scot_pop_est) %>%
-  mutate(CrudeRate = 100000*IncidencesAllAges / Population)
+  select(Year, IncidencesAllAges, CrudeRate, CrudeRateLower95pcConfidenceInterval, CrudeRateUpper95pcConfidenceInterval)
+  # rename(CrudeRate_o = CrudeRate) %>%
+  # inner_join(scot_pop_est) %>%
+  # mutate(CrudeRate = 1e5*IncidencesAllAges / Population)
 
 fit_incidence_nat <- lm(IncidencesAllAges ~ Year, data = dat2)
-p3 <- dat %>%
+p3 <- dat2 %>%
   select(Year, IncidencesAllAges, CrudeRate) %>%
   ggplot(aes(x = Year, y = IncidencesAllAges)) +
   geom_point() + 
   geom_line() +
   geom_smooth(method = "lm") +
-  annotate("text", x=2000, y=850, label=paste0("y ~",  sprintf(fit_incidence_nat$coefficients["Year"], fmt="%.2f"), " x")) +
+  annotate("text", x=2000, y=32000, label=paste0("y ~",  sprintf(fit_incidence_nat$coefficients["Year"], fmt="%.2f"), " x")) +
   ylab("Total Incidence") + ggtitle("Total Incidence (Scotland)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
+p3
 
 fit_incidence_rate_nat <- lm(CrudeRate ~ Year, data = dat2)
 p4 <- dat2 %>%
 ggplot(aes(x = Year, y = CrudeRate)) +
   geom_point() + 
   geom_line() +
+  geom_ribbon(aes(ymin = CrudeRateLower95pcConfidenceInterval, 
+                  ymax = CrudeRateUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   geom_smooth(method = "lm") +
   annotate("text", x=2000, y=600, label=paste0("y ~",  sprintf(fit_incidence_rate_nat$coefficients["Year"], fmt="%.2f"), " x")) +
   ylab("Total Incidence Rate per 100,000") + ggtitle("Total Incidence Rate (Scotland)") +
   theme_bw() +
   theme(plot.title = element_text(face="bold"))
+p4
 
 ggplotify::as.ggplot(grid.arrange(p, p2, p3, p4, ncol = 2, nrow = 2))
 ggsave("pics/all_incidence_and_rate.png", width = 8, height = 8, dpi=300)
-
