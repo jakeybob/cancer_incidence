@@ -196,6 +196,8 @@ pop_over70 <- sum(ages$pop[71:91])  # 29722
 
 #### more plots etc ####
 
+# 1. all incidence and rates  ####
+
 dat <- df_board %>% filter(Sex == "All",
                            CancerSite == "All cancer types",
                            HB2014Name == "NHS Borders")
@@ -285,3 +287,96 @@ p4
 
 ggplotify::as.ggplot(grid.arrange(p, p2, p3, p4, ncol = 2, nrow = 2))
 ggsave("pics/all_incidence_and_rate.png", width = 8, height = 8, dpi=300)
+
+
+#### 2. ####
+
+dat <- df_board %>% filter(CancerSite != "All cancer types",
+                           # Year > 2007,
+                           Sex == "All")
+
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = EASR)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "free_y",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites EASR") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face="bold"))
+
+ggsave("pics/small_multiples_borders_EASR_1.png", dpi=300, width=20, height=10, units = "in")
+
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = EASR)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "fixed",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites EASR") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold"))
+
+ggsave("pics/small_multiples_borders_EASR_2.png", dpi=300, width=20, height=10, units = "in")
+
+
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = StandardisedIncidenceRatio)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "free_y",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites SI Ratio") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold"))
+
+ggsave("pics/small_multiples_borders_SI_1.png", dpi=300, width=20, height=10, units = "in")
+
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = StandardisedIncidenceRatio)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "fixed",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites SI Ratio") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold"))
+
+ggsave("pics/small_multiples_borders_SI_2.png", dpi=300, width=20, height=10, units = "in")
+
