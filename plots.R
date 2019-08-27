@@ -298,7 +298,14 @@ dat <- df_board %>% filter(CancerSite != "All cancer types",
 # relative coefficients
 df <- dat %>%
   filter(HB2014Name == "NHS Borders") %>%
-  select(CancerSite, Year, CrudeRate, EASR, StandardisedIncidenceRatio) 
+  select(CancerSite, Year, IncidencesAllAges,CrudeRate, EASR, StandardisedIncidenceRatio) 
+
+absolute_5yr_av_incidence <- dat %>%
+  filter(Year > 2012) %>%
+  select(CancerSite, Year, IncidencesAllAges) %>%
+  rename(cancers = CancerSite) %>%
+  group_by(cancers) %>%
+  summarise(incidence_5yr_av = mean(IncidencesAllAges, na.rm=T))
 
 cancers <- unique(df$CancerSite)
 coeffs_crude <- vector(length=length(cancers))
@@ -309,15 +316,16 @@ for(i in seq_along(cancers)){
   coeffs_crude[i] <- lm(CrudeRate ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
   coeffs_EASR[i] <- lm(EASR ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
   coeffs_SI[i] <- lm(StandardisedIncidenceRatio ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
-  
 }
 
 cancer_trends <- tibble(cancers = cancers,
                         coeffs_crude = coeffs_crude,
                         coeffs_EASR = coeffs_EASR,
                         coeffs_SI = coeffs_SI) %>%
-  arrange(-coeffs_crude)
+  arrange(-coeffs_crude) %>%
+  inner_join(absolute_5yr_av_incidence)
 # above shows coeffs of crude rate fit, EASR fit and SI fit
+write_csv(cancer_trends, "data/cancer_trends.csv")
 
 
 dat %>% 
