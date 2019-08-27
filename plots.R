@@ -295,6 +295,31 @@ dat <- df_board %>% filter(CancerSite != "All cancer types",
                            # Year > 2007,
                            Sex == "All")
 
+# relative coefficients
+df <- dat %>%
+  filter(HB2014Name == "NHS Borders") %>%
+  select(CancerSite, Year, CrudeRate, EASR, StandardisedIncidenceRatio) 
+
+cancers <- unique(df$CancerSite)
+coeffs_crude <- vector(length=length(cancers))
+coeffs_EASR <- coeffs_crude
+coeffs_SI <- coeffs_crude
+
+for(i in seq_along(cancers)){
+  coeffs_crude[i] <- lm(CrudeRate ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
+  coeffs_EASR[i] <- lm(EASR ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
+  coeffs_SI[i] <- lm(StandardisedIncidenceRatio ~ Year, data = filter(df, CancerSite == cancers[i]))$coefficients["Year"]
+  
+}
+
+cancer_trends <- tibble(cancers = cancers,
+                        coeffs_crude = coeffs_crude,
+                        coeffs_EASR = coeffs_EASR,
+                        coeffs_SI = coeffs_SI) %>%
+  arrange(-coeffs_crude)
+# above shows coeffs of crude rate fit, EASR fit and SI fit
+
+
 dat %>% 
   filter(HB2014Name == "NHS Borders") %>%
   mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
