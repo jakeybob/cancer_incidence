@@ -3,6 +3,5 @@
 .RData
 .Ruserdata
 data/
-pics/
 *.log
 *.tex
