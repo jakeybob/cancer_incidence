@@ -482,12 +482,107 @@ dat %>%
 
 ggsave("pics/small_multiples_breast.png", dpi=300, width=20, height=14, units = "in")
 
-# df <- dat %>%
-#   filter(CancerSite == "Breast",
-#          HB2014Name == "NHS Fife") %>%
-#   select(Year, CrudeRate)
-# 
-# ff <- fft(df$CrudeRate)[2:length(df$CrudeRate)]
-# ff <- ff[1:round(length(ff)/2)]
-# pow <- Re(ff*Conj(ff))
-# plot(pow)
+
+# 4. ageing and skin ####
+
+dat <- df_network %>% filter(CancerSite != "All cancer types",
+                           Sex == "All") %>%
+  filter(Region == "South East of Scotland") %>%
+  filter(CancerSite %in% c("Non-melanoma skin cancer",
+                           "Squamous cell carcinoma of the skin",
+                           "Basal cell carcinoma of the skin")) %>%
+  filter(CancerSite %in% c("Non-melanoma skin cancer")) %>%
+  filter(Year %in% c(2017, 2007)) %>%
+  select(Year, CancerSite, contains("IncidenceRate")) %>%
+  gather(key="age_group", value = "rate", -Year, -CancerSite) %>%
+  mutate(age_group = str_remove(age_group, "IncidenceRateAge")) %>%
+  mutate(age_group = case_when(age_group == "Under5" ~ "00-04",
+                                age_group == "5To9" ~ "05-09",
+                                age_group == "10To14" ~ "10-14",
+                                age_group == "15To19" ~ "15-19",
+                                age_group == "20To24" ~ "20-24",
+                                age_group == "25To29" ~ "25-29",
+                                age_group == "30To34" ~ "30-24",
+                                age_group == "35To39" ~ "35-39",
+                                age_group == "40To44" ~ "40-44",
+                                age_group == "45To49" ~ "45-49",
+                                age_group == "50To54" ~ "50-54",
+                                age_group == "55To59" ~ "55-59",
+                                age_group == "60To64" ~ "60-64",
+                                age_group == "65To69" ~ "65-69",
+                                age_group == "70To74" ~ "70-74",
+                                age_group == "75To79" ~ "75-79",
+                                age_group == "80To84" ~ "80-84",
+                                age_group == "85To89" ~ "85-89",
+                                age_group == "90AndOver" ~ "90+",
+                                TRUE ~ "NA")) 
+
+# distribution of crude rate with age group for C44 cancer in SE Scot
+p <- dat %>%  
+  filter(Year == 2017) %>%
+  mutate(Year = as.factor(Year)) %>%
+  ggplot(aes(x = age_group, y = rate)) + 
+  geom_col(width=1, position="identity", alpha=.7) +
+  theme_bw() +
+  labs(title = "SE Scotland | C44 Incidence by Age | 2017", y = "crude rate") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# ggsave("pics/C44_SE_Scotland_2017.png", dpi=300, width=8, height=8, units = "in")
+
+  
+
+dat_incidence_SEscot_2017 <- dat %>% 
+  filter(Year == 2017) %>%
+  select(-Year, -CancerSite)
+
+df_borders_pop <- read_rds("data/borders_pop.rds") %>%
+  select(age_group_5yr, starts_with("20")) %>%
+  group_by(age_group_5yr) %>%
+  summarise_at(vars(starts_with("20")), sum) %>%
+  rename(age_group = age_group_5yr) %>%
+  inner_join(dat_incidence_SEscot_2017)
+
+df_c44_projections <- df_borders_pop %>%
+  mutate(rate = rate/1e5) %>%
+  mutate_at(vars(starts_with("20")), .funs = list(~ . * rate ))
+
+df_c44_projections_all_ages <- df_c44_projections %>%
+  select( `2019`:`2039`) %>%
+  summarise_all(sum) %>%
+  gather(key = "Year", value="IncidenceAll") %>%
+  mutate(`IncidenceAll` = round(`IncidenceAll`))
+
+df_c44_projections_over70 <- df_c44_projections %>%
+  filter(age_group %in% c("70-74", "75-79", "80-84", "85-89", "90+")) %>%
+  select( `2019`:`2039`) %>%
+  summarise_all(sum) %>%
+  gather(key = "Year", value="Incidence70+") %>%
+  mutate(`Incidence70+` = round(`Incidence70+`))
+
+df_c44_projections_comp <- df_c44_projections_all_ages %>%
+  full_join(df_c44_projections_over70) %>%
+  mutate(over_70_ratio = 100*`Incidence70+` / IncidenceAll) %>%
+  gather(key="incidence_type", value="Incidence", -Year) %>%
+  mutate(incidence_type = as.factor(incidence_type))
+
+p1 <- df_c44_projections_comp %>%
+  filter(incidence_type != "over_70_ratio") %>%
+  ggplot(aes(x = Year, y = Incidence, group=incidence_type)) + 
+  geom_point(aes(colour=incidence_type)) +
+  geom_line(aes(colour=incidence_type)) +
+  theme_bw() +
+  labs(title = "Projected C44 Incidence") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        legend.position = "bottom")
+
+p2 <- df_c44_projections_comp %>%
+  filter(incidence_type == "over_70_ratio") %>%
+  ggplot(aes(x = Year, y = Incidence, group=incidence_type)) +
+  geom_point() + geom_line() +
+  theme_bw() +
+  labs(y = "over_70_ratio", title = "Projected Percentage of >70s") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+p_C44_projections <- grid.arrange(p, p1, p2, ncol = 3)
+ggplotify::as.ggplot(p_C44_projections)
+ggsave("pics/C44_projections.png", dpi=300, width=15, height=8, units = "in")
