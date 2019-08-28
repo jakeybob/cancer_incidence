@@ -298,9 +298,9 @@ dat <- df_board %>% filter(CancerSite != "All cancer types",
 # relative coefficients
 df <- dat %>%
   filter(HB2014Name == "NHS Borders") %>%
-  select(CancerSite, Year, IncidencesAllAges,CrudeRate, EASR, StandardisedIncidenceRatio) 
+  select(CancerSite, Year, IncidencesAllAges, CrudeRate, EASR, StandardisedIncidenceRatio) 
 
-absolute_5yr_av_incidence <- dat %>%
+absolute_5yr_av_incidence <- df %>%
   filter(Year > 2012) %>%
   select(CancerSite, Year, IncidencesAllAges) %>%
   rename(cancers = CancerSite) %>%
@@ -323,11 +323,57 @@ cancer_trends <- tibble(cancers = cancers,
                         coeffs_EASR = coeffs_EASR,
                         coeffs_SI = coeffs_SI) %>%
   arrange(-coeffs_crude) %>%
-  inner_join(absolute_5yr_av_incidence)
+  inner_join(absolute_5yr_av_incidence) %>%
+  mutate_if(is.numeric, ~round(., digits=2))
 # above shows coeffs of crude rate fit, EASR fit and SI fit
 write_csv(cancer_trends, "data/cancer_trends.csv")
 
 
+# Crude Rate
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = CrudeRate)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "free_y",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites Crude Rate") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face="bold"))
+
+ggsave("pics/small_multiples_borders_crude_1.png", dpi=300, width=20, height=10, units = "in")
+
+dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
+  # filter(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin")) %>%
+  ggplot(aes(x = Year, y = CrudeRate)) +
+  # geom_point() + 
+  geom_line() +
+  geom_smooth(method="lm", size=.5, aes(colour = flag)) +
+  scale_colour_manual(values=c("black", "red")) +
+  facet_wrap(vars(CancerSite),
+             scales = "fixed",
+             labeller=label_wrap_gen(width = 30, multi_line = TRUE)) +
+  labs(x = "", title = "NHS Borders All Sites Crude Rate") +
+  theme_bw() + 
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face = "bold"))
+
+ggsave("pics/small_multiples_borders_crude_2.png", dpi=300, width=20, height=10, units = "in")
+
+
+# EASR
 dat %>% 
   filter(HB2014Name == "NHS Borders") %>%
   mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
@@ -370,7 +416,7 @@ dat %>%
 
 ggsave("pics/small_multiples_borders_EASR_2.png", dpi=300, width=20, height=10, units = "in")
 
-
+# SI ratio
 dat %>% 
   filter(HB2014Name == "NHS Borders") %>%
   mutate(flag = if_else(CancerSite %in% c("Non-melanoma skin cancer", "Squamous cell carcinoma of the skin", "Basal cell carcinoma of the skin"), T, F)) %>%
