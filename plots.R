@@ -586,3 +586,39 @@ p2 <- df_c44_projections_comp %>%
 p_C44_projections <- grid.arrange(p, p1, p2, ncol = 3)
 ggplotify::as.ggplot(p_C44_projections)
 ggsave("pics/C44_projections.png", dpi=300, width=15, height=8, units = "in")
+
+
+# 5. skin/sex ####
+dat <- df_board %>% filter(CancerSite != "All cancer types",
+                           Sex != "All")
+
+p_skin_sex <- dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  filter(CancerSite %in% c("Non-melanoma skin cancer")) %>%
+  ggplot(aes(x = Year, y = EASR)) +
+  geom_point() + geom_line() +
+  facet_wrap(vars(Sex), scales="fixed", labeller=label_wrap_gen(width = 20, multi_line = TRUE)) + 
+  ggtitle("NHS Borders | C44 | Sex") + ylab("EASR") +
+  theme_bw() +
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face="bold"))
+
+p_skin_sex2 <- dat %>% 
+  filter(HB2014Name == "NHS Borders") %>%
+  filter(CancerSite %in% c("Non-melanoma skin cancer")) %>%
+  ggplot(aes(x = Year, y = CrudeRate)) +
+  geom_point() + geom_line() +
+  facet_wrap(vars(Sex), scales="fixed", labeller=label_wrap_gen(width = 20, multi_line = TRUE)) + 
+  ggtitle("NHS Borders | C44 | Sex") + ylab("crude rate") +
+  theme_bw() +
+  theme(legend.position = "none",
+        strip.background = element_rect(fill = "grey95"),
+        strip.text = element_text(face = "bold"),
+        plot.title = element_text(face="bold"))
+p_skin_sex2
+
+p_skin_sex_combined <- grid.arrange(p_skin_sex, p_skin_sex2, ncol = 2)
+ggplotify::as.ggplot(p_skin_sex_combined)
+ggsave("pics/p_skin_sex_combined.png", dpi=300, width=15, height=8, units = "in")
