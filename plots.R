@@ -596,7 +596,9 @@ p_skin_sex <- dat %>%
   filter(HB2014Name == "NHS Borders") %>%
   filter(CancerSite %in% c("Non-melanoma skin cancer")) %>%
   ggplot(aes(x = Year, y = EASR)) +
-  geom_point() + geom_line() +
+  geom_point() + geom_line() + 
+  geom_ribbon(aes(ymin = EASRLower95pcConfidenceInterval, 
+                  ymax = EASRUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   facet_wrap(vars(Sex), scales="fixed", labeller=label_wrap_gen(width = 20, multi_line = TRUE)) + 
   ggtitle("NHS Borders | C44 | Sex") + ylab("EASR") +
   theme_bw() +
@@ -610,6 +612,8 @@ p_skin_sex2 <- dat %>%
   filter(CancerSite %in% c("Non-melanoma skin cancer")) %>%
   ggplot(aes(x = Year, y = CrudeRate)) +
   geom_point() + geom_line() +
+  geom_ribbon(aes(ymin = CrudeRateLower95pcConfidenceInterval, 
+                  ymax = CrudeRateUpper95pcConfidenceInterval), alpha = .1, color = NA) +
   facet_wrap(vars(Sex), scales="fixed", labeller=label_wrap_gen(width = 20, multi_line = TRUE)) + 
   ggtitle("NHS Borders | C44 | Sex") + ylab("crude rate") +
   theme_bw() +
